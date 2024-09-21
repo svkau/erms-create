@@ -1,6 +1,6 @@
 from lxml import etree
 from uuid import uuid4
-from erms.funcs import add_in_element
+from erms_create.funcs import add_in_element
 
 
 class Record:
@@ -65,7 +65,7 @@ class Record:
 		if fully_qual_class_code:
 			attributes["fullyQualifiedClassificationCode"] = fully_qual_class_code
 		if new_fully_qual_class_code:
-			attribute["newFullyQualifiedClassificationCode"]: new_fully_qual_class_code
+			attributes["newFullyQualifiedClassificationCode"]: new_fully_qual_class_code
 
 		elm = etree.Element("classification", attributes)
 		elm.text = value

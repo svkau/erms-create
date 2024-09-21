@@ -1,13 +1,21 @@
 from lxml import etree
 from uuid import uuid4
-from erms.funcs import add_in_element
+from erms_create.funcs import add_in_element
+from erms_create.erms_dates import Dates
+import erms_value_lists as value_lists
 
 
 class Aggregation:
+	"""
+	Class Aggregation
+	"""
 	def __init__(self, type_of_aggregation):
-		self.aggregation = etree.Element("aggregation",
-									   systemIdentifier=str(uuid4()), aggregationType=type_of_aggregation)
-		self.object_id = etree.SubElement(self.aggregation, "objectId")
+
+		if type_of_aggregation not in value_lists.aggregation_type:
+			raise Exception(f"'{type_of_aggregation}' is not a valid type of aggregation.")
+
+		self.aggregation = etree.Element("aggregation", systemIdentifier=str(uuid4()), aggregationType=type_of_aggregation)
+		self.object_id = None
 		self.extra_id = []
 		self.information_class = None
 		self.security_class = None
@@ -20,7 +28,7 @@ class Aggregation:
 		self.keywords = None
 		self.title = None
 		self.other_title = []
-		self.subject = None
+		self.subject = []
 		self.status = None
 		self.relation = []
 		self.additional_information = None
@@ -41,32 +49,118 @@ class Aggregation:
 		self.sub_aggregation = None
 		self.record = []
 
-	def add_extra_id(self, type_of_id, value):
+	def set_object_id(self, text: str):
+
+		"""
+		Creates element **objectId** (if not previously set) with text,
+		and then adds it to the aggregation element.
+
+		The element object is assigned to **Aggregation.object_id**
+
+		:param text: string
+			Element's text
+		"""
+
+		if self.object_id is None:
+			self.object_id = etree.Element("objectId")
+			self.object_id.text = text
+			add_in_element(self.aggregation, self.object_id)
+
+	def add_extra_id(self, type_of_id: str, text: str) -> etree.Element:
+
+		"""
+		Creates element **extraId** with attribute and text,
+		and then adds it to the aggregation element.
+
+		The element object is added to the list **Aggregation.extra_id**
+
+		Returns the created element.
+
+		:param type_of_id: string
+			Type of extra id.
+		:param text: string
+			Element's text
+		:return: etree.Element
+		"""
+
 		elm = etree.Element("extraId", extraIdType=type_of_id)
-		elm.text = value
+		elm.text = text
 		self.extra_id.append(elm)
 		add_in_element(self.aggregation, elm)
+		return elm
 
-	def add_information_class(self, value):
+	def set_information_class(self, text: str):
+
+		"""
+		Creates element **informationClass** (if not previously set)
+		with text value and then adds it to the aggregation element.
+
+		The element object is assigned to **Aggregation.information_class**.
+
+		:param text: string - Element's text
+		"""
+
 		if self.information_class is None:
 			self.information_class = etree.Element("informationClass")
-			self.information_class.text = value
+			self.information_class.text = text
 			add_in_element(self.aggregation, self.information_class)
 
-	def add_security_class(self, value):
+	def set_security_class(self, text: str):
+
+		"""
+		Creates element **securityClass** (if not previously set)
+		with text value and then adds it to the aggregation element.
+
+		The element object is assigned to **Aggregation.security_class**.
+
+		:param text: string - Element's text
+		"""
+
 		if self.security_class is None:
 			self.security_class = etree.Element("securityClass")
-			self.security_class.text = value
+			self.security_class.text = text
 			add_in_element(self.aggregation, self.security_class)
 
-	def add_identification(self, type_of_identification, value):
+	def add_identification(self, type_of_identification: str, text: str) -> etree.Element:
+
+		"""
+		Creates element **identification** with attribute and text,
+		and then adds it to the aggregation element.
+
+		The element object is added to the list **Aggregation.identification**
+
+		Returns the created element.
+
+		:param type_of_identification: string - Type of identification
+		:param text: string - Element's text
+		:return: etree.Element
+		"""
+
 		elm = etree.Element("identification", identificationType=type_of_identification)
-		elm.text = value
+		elm.text = text
 		self.identification.append(elm)
 		add_in_element(self.aggregation, elm)
+		return elm
 
-	def add_classification(self, value, class_id=None, class_code=None, fully_qual_class_code=None,
-						   new_fully_qual_class_code=None):
+	def add_classification(self, text: str, class_id: str = None, class_code: str = None,
+						   fully_qual_class_code: str = None, new_fully_qual_class_code: str = None) -> etree.Element:
+
+		"""
+		Creates element **classification** with attributesand text,
+		and then adds it to the aggregation element.
+
+		The element object is added to the list **Aggregation.classification**
+
+		Returns the created element.
+
+		:param text: string - Element's text
+		:param class_id: string - string - (optional)
+		:param class_code: string - (optional)
+		:param fully_qual_class_code: - (optional)
+		:param new_fully_qual_class_code: - (optional)
+		:return: etree.Element
+		"""
+
 		attributes = {}
 		if class_id:
 			attributes["classificationId"] = class_id
@@ -75,93 +169,233 @@ class Aggregation:
 		if fully_qual_class_code:
 			attributes["fullyQualifiedClassificationCode"] = fully_qual_class_code
 		if new_fully_qual_class_code:
-			attribute["newFullyQualifiedClassificationCode"]: new_fully_qual_class_code
+			attributes["newFullyQualifiedClassificationCode"]: new_fully_qual_class_code
 
 		elm = etree.Element("classification", attributes)
-		elm.text = value
+		elm.text = text
 		self.classification.append(elm)
 		add_in_element(self.aggregation, elm)
+		return elm
 
-	def add_parent_aggregation_id(self, value):
+	def set_parent_aggregation_id(self, text: str):
+
+		"""
+		Creates element **parentAggregationId** (if not previously set)
+		with text value and then adds it to the aggregation element.
+
+		The element object is assigned to **Aggregation.parent_aggregation_id**.
+
+		:param text: string - Element's text
+		"""
+
 		if self.parent_aggregation_id is None:
 			self.parent_aggregation_id = etree.Element("parentAggregationId")
-			self.parent_aggregation_id.text = value
+			self.parent_aggregation_id.text = text
 			add_in_element(self.aggregation, self.parent_aggregation_id)
 
-	def add_hierarchical_parent_class_id(self, value):
+	def set_hierarchical_parent_class_id(self, text: str):
+
+		"""
+		Creates element **hierarchicalParentClassId** (if not previously set)
+		with text value and then adds it to the aggregation element.
+
+		The element object is assigned to **Aggregation.hierarchical_parent_class_id**.
+
+		:param text: string - Element's text
+		"""
+
 		if self.hierarchical_parent_class_id is None:
 			self.hierarchical_parent_class_id = etree.Element("hierarchicalParentClassId")
-			self.hierarchical_parent_class_id.text = value
+			self.hierarchical_parent_class_id.text = text
 			add_in_element(self.aggregation, self.hierarchical_parent_class_id)
 
-	def add_max_levels_of_aggregation(self, value):
+	def set_max_levels_of_aggregation(self, text: str):
+
+		"""
+		Creates element **maxLevelsOfAggragation** (if not previously set)
+		with text value and then adds it to the aggregation element.
+
+		The element object is assigned to **Aggregation.max_levels_of_aggregation**.
+
+		:param text: string - Element's text
+		"""
+
 		if self.max_levels_of_aggregation is None:
 			self.max_levels_of_aggregation = etree.Element("maxLevelsOfAggregation")
-			self.max_levels_of_aggregation.text = value
+			self.max_levels_of_aggregation.text = text
 			add_in_element(self.aggregation, self.max_levels_of_aggregation)
 
-	def add_level_name(self, value):
+	def set_level_name(self, text: str):
+
+		"""
+		Creates element **levelName** (if not previously set)
+		with text value and then adds it to the aggregation element.
+
+		The element object is assigned to **Aggregation.level_name**.
+
+		:param text: string - Element's text
+		"""
+
 		if self.level_name is None:
 			self.level_name = etree.Element("levelName")
-			self.level_name.text = value
+			self.level_name.text = text
 			add_in_element(self.aggregation, self.level_name)
 
-	def add_keyword(self, value):
+	def add_keyword(self, text: str) -> etree.Element:
+
+		"""
+				Creates element **keywords** (if not previously set)
+				which is added to the aggregation element.
+
+				Creates element **keyword** with text value and then
+				adds it to the keywords' element.
+
+				Returns the created keyword element.
+
+				:param text: string - Element's text
+				:return: etree.Element
+				"""
+
 		if self.keywords is None:
 			self.keywords = etree.Element("keywords")
 			add_in_element(self.aggregation, self.keywords)
 
 		elm = etree.Element("keyword")
-		elm.text = value
+		elm.text = text
 		self.keywords.append(elm)
+		return elm
 
-	def add_title(self, value):
+	def set_title(self, text: str):
+
+		"""
+		Creates element **title** (if not previously set)
+		with text value and then adds it to the aggregation element.
+
+		The element object is assigned to **Aggregation.title**.
+
+		:param text: string - Element's text
+		"""
+
 		if self.title is None:
 			self.title = etree.Element("title")
-			self.title.text = value
+			self.title.text = text
 			add_in_element(self.aggregation, self.title)
 
-	def add_other_title(self, value, type_of_title):
+	def add_other_title(self, text: str, type_of_title: str) -> etree.Element:
+
+		"""
+		Creates element **otherTitle** with attribute and text,
+		and then adds it to the aggregation element.
+
+		The element object is added to the list **Aggregation.other_title**
+
+		Returns the created element.
+
+		:param type_of_title: string - Type of title
+		:param text: string - Element's text
+		:return: etree.Element
+		"""
+
 		elm = etree.Element("otherTitle", titleType=type_of_title)
-		elm.text = value
+		elm.text = text
 		self.other_title.append(elm)
 		add_in_element(self.aggregation, elm)
+		return elm
 
-	def add_subject(self, value):
-		if self.subject is None:
-			self.subject = etree.Element("subject")
-			self.subject.text = value
-			add_in_element(self.aggregation, self.subject)
+	def add_subject(self, text: str) -> etree.Element:
 
-	def add_status(self, value):
+		"""
+		Creates element **subject** with text,
+		and then adds it to the aggregation element.
+
+		The element object is added to the list **Aggregation.subject**
+
+		Returns the created element.
+
+		:param text: string - Element's text
+		:return: etree.Element
+		"""
+
+		elm = etree.Element("subject")
+		elm.text = text
+		self.subject.append(elm)
+		add_in_element(self.aggregation, elm)
+		return elm
+
+	def set_status(self, text: str):
+
+		"""
+		Creates element **status** (if not previously set)
+		with text value and then adds it to the aggregation element.
+
+		The element object is assigned to **Aggregation.status**.
+
+		:param text: string - Element's text
+		"""
+
+		if text not in value_lists.status:
+			raise Exception(f"'{text}' is not a valid status.")
+
 		if self.status is None:
-			self.status = etree.Element("status", value=value)
+			self.status = etree.Element("status", value=text)
 			add_in_element(self.aggregation, self.status)
 
-	def add_relation(self, value, type_of_relation, other_type=None):
+	def add_relation(self, text: str, type_of_relation: str, other_type: str = None):
+
+		"""
+			Creates element **relation** with text and attribute,
+			and then adds it to the aggregation element.
+
+			The element object is added to the list **Aggregation.relation**
+
+			Returns the created element.
+
+			:param text: string - Element's text
+			:param type_of_relation: string - Selected from a list of values.
+			:param other_type: string - Obligatory if type_of_relation is "own_relation_definition".
+			:return: etree.Element
+			"""
+
+		if type_of_relation not in value_lists.relation_type:
+			raise Exception(f"'{type_of_relation}' is not a valid type of relation.")
+
+		if type_of_relation == "own_relation_definition" and other_type is None:
+			raise Exception(f"Parameter other_type is missing.")
+
 		attributes = {}
 		attributes["relationType"] = type_of_relation
 		if other_type:
 			attributes["otherRelationType"] = other_type
 
 		elm = etree.Element("relation", attributes)
-		elm.text = value
+		elm.text = text
 		self.relation.append(elm)
 		add_in_element(self.aggregation, elm)
+		return elm
 
-	def add_description(self, value):
+	def set_description(self, text: str):
+
+		"""
+		Creates element **description** (if not previously set)
+		with text value and then adds it to the aggregation element.
+
+		The element object is assigned to **Aggregation.description**.
+
+		:param text: string - Element's text
+		"""
+
 		if self.description is None:
 			self.description = etree.Element("description")
-			self.description.text = value
+			self.description.text = text
 			add_in_element(self.aggregation, self.description)
 
-	def add_date(self, date, type_of_date):
+	def date(self, date, type_of_date):
 		if self.dates is None:
 			self.dates = Dates()
 			add_in_element(self.aggregation, self.dates.dates)
-			self.dates.add_date(date, type_of_date)
+		self.dates.add_date(date, type_of_date)
 
-	def add_history_line(self, value):
+	def history_line(self, value):
 		if self.archival_history is None:
 			self.archival_history = etree.Element("archivalHistory")
 			add_in_element(self.aggregation, self.archival_history)
@@ -170,19 +404,19 @@ class Aggregation:
 		elm.text = value
 		self.archival_history.append(elm)
 
-	def add_dispatch_mode(self, value):
+	def dispatch_mode(self, value):
 		if self.dispatch_mode is None:
 			self.dispatch_mode = etree.Element("dispatchMode")
 			self.dispatch_mode.text = value
 			add_in_element(self.aggregation, self.dispatch_mode)
 
-	def add_access(self, value):
+	def access(self, value):
 		if self.access is None:
 			self.access = etree.Element("access")
 			self.access.text = value
 			add_in_element(self.aggregation, self.access)
 
-	def add_physical_location(self, current_location=None, home_location=None):
+	def physical_location(self, current_location=None, home_location=None):
 		if self.physical_locations is None:
 			self.physical_locations = etree.Element("physicalLocations")
 			add_in_element(self.aggregation, self.physical_locations)
@@ -201,7 +435,7 @@ class Aggregation:
 				elm.text = item
 				phys_loc.append(elm)
 
-	def add_note(self, value, note_type=None, note_date=None):
+	def note(self, value, note_type=None, note_date=None):
 		if self.notes is None:
 			self.notes = etree.Element("notes")
 			add_in_element(self.aggregation, self.notes)
@@ -216,13 +450,13 @@ class Aggregation:
 		elm.text = value
 		self.notes.append(elm)
 
-	def add_sub_aggregation(self, aggregation):
+	def sub_aggregation(self, aggregation):
 		if len(self.record) == 0:
 			if self.sub_aggregation is None:
 				self.sub_aggregation = aggregation
 				add_in_element(self.aggregation, aggregation)
 
-	def add_record(self, record):
+	def record(self, record):
 		if self.sub_aggregation is None:
 			self.record.append(record)
 			add_in_element(self.aggregation, record)

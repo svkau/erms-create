@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "erms-create"
+version = "0.0.1"
+authors = [
+    {name = "Henrik Vitalis", email = "henrik.vitalis@svenskakyrkan.se"},
+]
+description = "Simple library for creating ERMS-files"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+dependencies = [
+    "lxml",
+]

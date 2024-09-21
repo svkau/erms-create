@@ -1,5 +1,5 @@
 from lxml import etree
-from erms.funcs import add_in_element
+from erms_create.funcs import add_in_element
 
 
 class Restriction:
