@@ -11,8 +11,7 @@ aggregation_type = [
 record_physical_or_digital = [
     "physical",
     "digital",
-    # 'digital' is a corrrection. XSD-file has 'digitial'
-    "physcical_and_digital",
+    "physical_and_digital",
     "does_not_apply",
 ]
 
