@@ -1,4 +1,5 @@
 from lxml import etree
+from erms_dates import Dates
 from erms_create.funcs import add_in_element
 
 
@@ -25,5 +26,21 @@ class Control:
 			self.information_class.text = value
 			add_in_element(self.control, self.information_class)
 
+	def date(self, date, type_of_date):
+		if self.dates is None:
+			self.dates = Dates()
+			add_in_element(self.control, self.dates.dates)
+		self.dates.add_date(date, type_of_date)
 
+
+
+class Maintenance:
+	status_types = [
+		"cancelled", "created", "deleted", "derived",
+		"new", "revised", "unknown", "updated",
+	]
+	status = None
+	agency_code = None
+	other_agency_code = []
+	agency_name = []
 

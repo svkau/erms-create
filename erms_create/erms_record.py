@@ -7,7 +7,7 @@ class Record:
 
 	def __init__(self, type_of_record=None, physical_or_digital=None):
 
-		attributes = {}
+		attributes = dict()
 		attributes["systemIdentifier"] = str(uuid4())
 		if type_of_record is not None:
 			attributes["recordType"] = type_of_record
@@ -123,7 +123,7 @@ class Record:
 			add_in_element(self.record, self.running_number)
 
 	def add_relation(self, value, type_of_relation, other_type=None):
-		attributes = {}
+		attributes = dict()
 		attributes["relationType"] = type_of_relation
 		if other_type:
 			attributes["otherRelationType"] = other_type

@@ -362,7 +362,7 @@ class Aggregation:
 		if type_of_relation == "own_relation_definition" and other_type is None:
 			raise Exception(f"Parameter other_type is missing.")
 
-		attributes = {}
+		attributes = dict()
 		attributes["relationType"] = type_of_relation
 		if other_type:
 			attributes["otherRelationType"] = other_type
