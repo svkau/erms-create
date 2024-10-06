@@ -3,6 +3,7 @@ from uuid import uuid4
 
 from erms_create.funcs import add_in_element
 from erms_create.erms_elements import Dates, Agents
+from erms_create.erms_record import Record
 import erms_value_lists as value_lists
 
 
@@ -463,7 +464,9 @@ class Aggregation:
 				self.sub_aggregation = aggregation
 				add_in_element(self.aggregation, aggregation)
 
-	def record(self, record):
+	def add_record(self):
 		if self.sub_aggregation is None:
-			self.record.append(record)
-			add_in_element(self.aggregation, record)
+			new_rec = Record()
+			self.record.append(new_rec)
+			add_in_element(self.aggregation, new_rec.record)
+			return new_rec
