@@ -1,7 +1,8 @@
 from lxml import etree
 from uuid import uuid4
+
 from erms_create.funcs import add_in_element
-from erms_create.erms_dates import Dates
+from erms_create.erms_elements import Dates, Agents
 import erms_value_lists as value_lists
 
 
@@ -169,7 +170,7 @@ class Aggregation:
 		if fully_qual_class_code:
 			attributes["fullyQualifiedClassificationCode"] = fully_qual_class_code
 		if new_fully_qual_class_code:
-			attributes["newFullyQualifiedClassificationCode"]: new_fully_qual_class_code
+			attributes["newFullyQualifiedClassificationCode"] = new_fully_qual_class_code
 
 		elm = etree.Element("classification", attributes)
 		elm.text = text
@@ -389,7 +390,13 @@ class Aggregation:
 			self.description.text = text
 			add_in_element(self.aggregation, self.description)
 
-	def date(self, date, type_of_date):
+	def add_agent(self, agent_type, name, **kwargs):
+		if self.agents is None:
+			self.agents = Agents()
+			add_in_element(self.aggregation, self.agents.agents)
+		self.agents.add_agent(agent_type, name, **kwargs)
+
+	def add_date(self, date, type_of_date):
 		if self.dates is None:
 			self.dates = Dates()
 			add_in_element(self.aggregation, self.dates.dates)
