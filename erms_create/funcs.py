@@ -1,66 +1,68 @@
 from lxml import etree
+import erms_create.ns as ns
 
 CONTROL_SORT_ORDER = [
-	"identification",
-	"informationClass",
-	"classificationSchema",
-	"securityClass",
-	"dates",
-	"maintenanceInformation",
-	"systemInformation",
+	ns.ERMS + "identification",
+	ns.ERMS + "informationClass",
+	ns.ERMS + "classificationSchema",
+	ns.ERMS + "securityClass",
+	ns.ERMS + "dates",
+	ns.ERMS + "maintenanceInformation",
+	ns.ERMS + "systemInformation",
 ]
 
 AGGREGATION_SORT_ORDER = [
-	"objectId", "extraId",
-	"informationClass",	"securityClass",
-	"identification", "classification",
-	"parentAggregationId", "hierarchicalParentClassId",
-	"maxLevelsOfAggregation", "levelName",
-	"keywords", "title",
-	"otherTitle", "subject",
-	"status", "relation",
-	"additionalInformation", "restriction",
-	"IPPInformation", "loan",
-	"disposal", "agents",
-	"description", "dates",
-	"action", "archivalHistory",
-	"dispatchMode", "access",
-	"physicalLocations", "notes",
-	"eSignatures", "aggregation",
-	"record",
+	ns.ERMS + "objectId", ns.ERMS + "extraId",
+	ns.ERMS + "informationClass",	ns.ERMS + "securityClass",
+	ns.ERMS + "identification", ns.ERMS + "classification",
+	ns.ERMS + "parentAggregationId", ns.ERMS + "hierarchicalParentClassId",
+	ns.ERMS + "maxLevelsOfAggregation", ns.ERMS + "levelName",
+	ns.ERMS + "keywords", ns.ERMS + "title",
+	ns.ERMS + "otherTitle", ns.ERMS + "subject",
+	ns.ERMS + "status", ns.ERMS + "relation",
+	ns.ERMS + "additionalInformation", ns.ERMS + "restriction",
+	ns.ERMS + "IPPInformation", ns.ERMS + "loan",
+	ns.ERMS + "disposal", ns.ERMS + "agents",
+	ns.ERMS + "description", ns.ERMS + "dates",
+	ns.ERMS + "action", ns.ERMS + "archivalHistory",
+	ns.ERMS + "dispatchMode", ns.ERMS + "access",
+	ns.ERMS + "physicalLocations", ns.ERMS + "notes",
+	ns.ERMS + "eSignatures", ns.ERMS + "aggregation",
+	ns.ERMS + "record",
 ]
 
 RECORD_SORT_ORDER = [
-	"objectId", "extraId",
-	"informationClass", "securityClass",
-	"identification", "classification",
-	"parentAggregationId", "levelName",
-	"keywords", "title",
-	"otherTitle", "subject",
-	"status", "runningNumber",
-	"relation", "restriction",
-	"IPPInformation", "loan",
-	"disposal", "direction",
-	"agents", "description",
-	"dates", "action",
-	"archivalHistory", "dispatchMode",
-	"access", "physicalLocation",
-	"notes", "eSignatures",
-	"additionalInformation",
+	ns.ERMS + "objectId", ns.ERMS + "extraId",
+	ns.ERMS + "informationClass", ns.ERMS + "securityClass",
+	ns.ERMS + "identification", ns.ERMS + "classification",
+	ns.ERMS + "parentAggregationId", ns.ERMS + "levelName",
+	ns.ERMS + "keywords", ns.ERMS + "title",
+	ns.ERMS + "otherTitle", ns.ERMS + "subject",
+	ns.ERMS + "status", ns.ERMS + "runningNumber",
+	ns.ERMS + "relation", ns.ERMS + "restriction",
+	ns.ERMS + "IPPInformation", ns.ERMS + "loan",
+	ns.ERMS + "disposal", ns.ERMS + "direction",
+	ns.ERMS + "agents", ns.ERMS + "description",
+	ns.ERMS + "dates", ns.ERMS + "action",
+	ns.ERMS + "archivalHistory", ns.ERMS + "dispatchMode",
+	ns.ERMS + "access", ns.ERMS + "physicalLocation",
+	ns.ERMS + "notes", ns.ERMS + "eSignatures",
+	ns.ERMS + "additionalInformation",
 ]
 
-RESTRICTION_SORT_ORDER = ["explanatoryText", "regulation", "informationClass", "securityClass", "dates", "duration"]
+RESTRICTION_SORT_ORDER = [ns.ERMS + "explanatoryText", ns.ERMS + "regulation",
+						  ns.ERMS + "informationClass", ns.ERMS + "securityClass",
+						  ns.ERMS + "dates", ns.ERMS + "duration"]
 
 
 def add_in_element(element: etree.Element, element_to_add: etree.Element):
-
-	if element.tag == "control":
+	if element.tag == ns.ERMS + "control":
 		sort_order = CONTROL_SORT_ORDER
-	elif element.tag == "aggregation":
+	elif element.tag == ns.ERMS + "aggregation":
 		sort_order = AGGREGATION_SORT_ORDER
-	elif element.tag == "record":
+	elif element.tag == ns.ERMS + "record":
 		sort_order = RECORD_SORT_ORDER
-	elif element.tag == "restriction":
+	elif element.tag == ns.ERMS + "restriction":
 		sort_order = RESTRICTION_SORT_ORDER
 	else:
 		raise Exception(f"Element '{element.tag}' is not a valid element.")

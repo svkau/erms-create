@@ -1,11 +1,10 @@
-from xml.etree.ElementTree import tostring
-
 from lxml import etree
+from erms_create import ns
 
 
 class Dates:
 	def __init__(self):
-		self.dates = etree.Element("dates")
+		self.element = etree.Element(ns.ERMS + "dates", nsmap=ns.ERMS_NSMAP)
 
 	def add_date(self, date, type_of_date):
 		date_types = [
@@ -19,11 +18,11 @@ class Dates:
 			"rendered", "reviewed", "sent", "start", "take_back", "transferred",
 		]
 		if type_of_date in date_types:
-			elm = etree.Element("date", dateType=type_of_date)
+			elm = etree.Element(ns.ERMS + "date", dateType=type_of_date, nsmap=ns.ERMS_NSMAP)
 		else:
-			elm = etree.Element("date", dateType="other", otherDateType=type_of_date)
+			elm = etree.Element(ns.ERMS + "date", dateType="other", otherDateType=type_of_date, nsmap=ns.ERMS_NSMAP)
 		elm.text = date
-		self.dates.append(elm)
+		self.element.append(elm)
 
 
 class Agent:
@@ -36,31 +35,31 @@ class Agent:
 
 	def __init__(self, agent_type: str, name: str, organisation: str=None, unit_name: str=None,
 				 id_number: str=None, id_type: str=None, role:	str=None, protected_identity: str=None):
-		self.agent = etree.Element("agent", agentType=agent_type)
-		self.name = etree.SubElement(self.agent, "name")
+		self.element = etree.Element(ns.ERMS + "agent", agentType=agent_type, nsmap=ns.ERMS_NSMAP)
+		self.name = etree.SubElement(self.element, ns.ERMS + "name", nsmap=ns.ERMS_NSMAP)
 		self.name.text = name
 		if organisation:
-			self.organisation = etree.SubElement(self.agent, "organisation")
+			self.organisation = etree.SubElement(self.element, ns.ERMS + "organisation", nsmap=ns.ERMS_NSMAP)
 			self.organisation.text = organisation
 		if unit_name:
-			self.unit_name = etree.SubElement(self.agent, "unitName")
+			self.unit_name = etree.SubElement(self.element, ns.ERMS + "unitName", nsmap=ns.ERMS_NSMAP)
 			self.unit_name.text = unit_name
 		if id_number:
 			if not id_type: id_type = "unknown"
-			self.id_number = etree.SubElement(self.agent, "idNumber", idNumberType=id_type)
+			self.id_number = etree.SubElement(self.element, ns.ERMS + "idNumber", idNumberType=id_type, nsmap=ns.ERMS_NSMAP)
 			self.id_number.text = id_number
 		if role:
-			self.role = etree.SubElement(self.agent, "role")
+			self.role = etree.SubElement(self.element, ns.ERMS + "role", nsmap=ns.ERMS_NSMAP)
 			self.role.text = role
 		if protected_identity:
-			self.protected_identity = etree.SubElement(self.agent, "protectedIdentity")
+			self.protected_identity = etree.SubElement(self.element, ns.ERMS + "protectedIdentity", nsmap=ns.ERMS_NSMAP)
 			self.protected_identity.text = "true"
 
 
 class Agents:
 	def __init__(self):
-		self.agents = etree.Element("agents")
+		self.element = etree.Element(ns.ERMS + "agents", nsmap=ns.ERMS_NSMAP)
 
 	def add_agent(self, agent_type, name, **kwargs):
 		new_agent = Agent(agent_type, name, **kwargs)
-		self.agents.append(new_agent.agent)
+		self.element.append(new_agent.element)

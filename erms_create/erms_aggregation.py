@@ -5,6 +5,7 @@ from erms_create.funcs import add_in_element
 from erms_create.erms_elements import Dates, Agents
 from erms_create.erms_record import Record
 import erms_value_lists as value_lists
+import erms_create.ns as ns
 
 
 class Aggregation:
@@ -16,7 +17,8 @@ class Aggregation:
 		if type_of_aggregation not in value_lists.aggregation_type:
 			raise Exception(f"'{type_of_aggregation}' is not a valid type of aggregation.")
 
-		self.aggregation = etree.Element("aggregation", systemIdentifier=str(uuid4()), aggregationType=type_of_aggregation)
+		self.aggregation = etree.Element(ns.ERMS + "aggregation", systemIdentifier=str(uuid4()),
+										 aggregationType=type_of_aggregation, nsmap=ns.ERMS_NSMAP)
 		self.object_id = None
 		self.extra_id = []
 		self.information_class = None
@@ -64,7 +66,7 @@ class Aggregation:
 		"""
 
 		if self.object_id is None:
-			self.object_id = etree.Element("objectId")
+			self.object_id = etree.Element(ns.ERMS + "objectId", nsmap=ns.ERMS_NSMAP)
 			self.object_id.text = text
 			add_in_element(self.aggregation, self.object_id)
 
@@ -85,7 +87,7 @@ class Aggregation:
 		:return: etree.Element
 		"""
 
-		elm = etree.Element("extraId", extraIdType=type_of_id)
+		elm = etree.Element(ns.ERMS + "extraId", extraIdType=type_of_id, nsmap=ns.ERMS_NSMAP)
 		elm.text = text
 		self.extra_id.append(elm)
 		add_in_element(self.aggregation, elm)
@@ -103,7 +105,7 @@ class Aggregation:
 		"""
 
 		if self.information_class is None:
-			self.information_class = etree.Element("informationClass")
+			self.information_class = etree.Element(ns.ERMS + "informationClass", nsmap=ns.ERMS_NSMAP)
 			self.information_class.text = text
 			add_in_element(self.aggregation, self.information_class)
 
@@ -119,7 +121,7 @@ class Aggregation:
 		"""
 
 		if self.security_class is None:
-			self.security_class = etree.Element("securityClass")
+			self.security_class = etree.Element(ns.ERMS + "securityClass", nsmap=ns.ERMS_NSMAP)
 			self.security_class.text = text
 			add_in_element(self.aggregation, self.security_class)
 
@@ -138,7 +140,7 @@ class Aggregation:
 		:return: etree.Element
 		"""
 
-		elm = etree.Element("identification", identificationType=type_of_identification)
+		elm = etree.Element(ns.ERMS + "identification", identificationType=type_of_identification, nsmap=ns.ERMS_NSMAP)
 		elm.text = text
 		self.identification.append(elm)
 		add_in_element(self.aggregation, elm)
@@ -173,7 +175,7 @@ class Aggregation:
 		if new_fully_qual_class_code:
 			attributes["newFullyQualifiedClassificationCode"] = new_fully_qual_class_code
 
-		elm = etree.Element("classification", attributes)
+		elm = etree.Element(ns.ERMS + "classification", attributes, nsmap=ns.ERMS_NSMAP)
 		elm.text = text
 		self.classification.append(elm)
 		add_in_element(self.aggregation, elm)
@@ -191,7 +193,7 @@ class Aggregation:
 		"""
 
 		if self.parent_aggregation_id is None:
-			self.parent_aggregation_id = etree.Element("parentAggregationId")
+			self.parent_aggregation_id = etree.Element(ns.ERMS + "parentAggregationId", nsmap=ns.ERMS_NSMAP)
 			self.parent_aggregation_id.text = text
 			add_in_element(self.aggregation, self.parent_aggregation_id)
 
@@ -207,7 +209,7 @@ class Aggregation:
 		"""
 
 		if self.hierarchical_parent_class_id is None:
-			self.hierarchical_parent_class_id = etree.Element("hierarchicalParentClassId")
+			self.hierarchical_parent_class_id = etree.Element(ns.ERMS + "hierarchicalParentClassId", nsmap=ns.ERMS_NSMAP)
 			self.hierarchical_parent_class_id.text = text
 			add_in_element(self.aggregation, self.hierarchical_parent_class_id)
 
@@ -223,7 +225,7 @@ class Aggregation:
 		"""
 
 		if self.max_levels_of_aggregation is None:
-			self.max_levels_of_aggregation = etree.Element("maxLevelsOfAggregation")
+			self.max_levels_of_aggregation = etree.Element(ns.ERMS + "maxLevelsOfAggregation", nsmap=ns.ERMS_NSMAP)
 			self.max_levels_of_aggregation.text = text
 			add_in_element(self.aggregation, self.max_levels_of_aggregation)
 
@@ -239,30 +241,30 @@ class Aggregation:
 		"""
 
 		if self.level_name is None:
-			self.level_name = etree.Element("levelName")
+			self.level_name = etree.Element(ns.ERMS + "levelName", nsmap=ns.ERMS_NSMAP)
 			self.level_name.text = text
 			add_in_element(self.aggregation, self.level_name)
 
 	def add_keyword(self, text: str) -> etree.Element:
 
 		"""
-				Creates element **keywords** (if not previously set)
-				which is added to the aggregation element.
+		Creates element **keywords** (if not previously set)
+		which is added to the aggregation element.
 
-				Creates element **keyword** with text value and then
-				adds it to the keywords' element.
+		Creates element **keyword** with text value and then
+		adds it to the keywords' element.
 
-				Returns the created keyword element.
+		Returns the created keyword element.
 
-				:param text: string - Element's text
-				:return: etree.Element
-				"""
+		:param text: string - Element's text
+		:return: etree.Element
+		"""
 
 		if self.keywords is None:
-			self.keywords = etree.Element("keywords")
+			self.keywords = etree.Element(ns.ERMS + "keywords", nsmap=ns.ERMS_NSMAP)
 			add_in_element(self.aggregation, self.keywords)
 
-		elm = etree.Element("keyword")
+		elm = etree.Element(ns.ERMS + "keyword", nsmap=ns.ERMS_NSMAP)
 		elm.text = text
 		self.keywords.append(elm)
 		return elm
@@ -279,7 +281,7 @@ class Aggregation:
 		"""
 
 		if self.title is None:
-			self.title = etree.Element("title")
+			self.title = etree.Element(ns.ERMS + "title", nsmap=ns.ERMS_NSMAP)
 			self.title.text = text
 			add_in_element(self.aggregation, self.title)
 
@@ -298,7 +300,7 @@ class Aggregation:
 		:return: etree.Element
 		"""
 
-		elm = etree.Element("otherTitle", titleType=type_of_title)
+		elm = etree.Element(ns.ERMS + "otherTitle", titleType=type_of_title, nsmap=ns.ERMS_NSMAP)
 		elm.text = text
 		self.other_title.append(elm)
 		add_in_element(self.aggregation, elm)
@@ -318,7 +320,7 @@ class Aggregation:
 		:return: etree.Element
 		"""
 
-		elm = etree.Element("subject")
+		elm = etree.Element(ns.ERMS + "subject", nsmap=ns.ERMS_NSMAP)
 		elm.text = text
 		self.subject.append(elm)
 		add_in_element(self.aggregation, elm)
@@ -339,7 +341,7 @@ class Aggregation:
 			raise Exception(f"'{text}' is not a valid status.")
 
 		if self.status is None:
-			self.status = etree.Element("status", value=text)
+			self.status = etree.Element(ns.ERMS + "status", value=text, nsmap=ns.ERMS_NSMAP)
 			add_in_element(self.aggregation, self.status)
 
 	def add_relation(self, text: str, type_of_relation: str, other_type: str = None):
@@ -369,7 +371,7 @@ class Aggregation:
 		if other_type:
 			attributes["otherRelationType"] = other_type
 
-		elm = etree.Element("relation", attributes)
+		elm = etree.Element(ns.ERMS + "relation", attributes, nsmap=ns.ERMS_NSMAP)
 		elm.text = text
 		self.relation.append(elm)
 		add_in_element(self.aggregation, elm)
@@ -387,25 +389,25 @@ class Aggregation:
 		"""
 
 		if self.description is None:
-			self.description = etree.Element("description")
+			self.description = etree.Element(ns.ERMS + "description", nsmap=ns.ERMS_NSMAP)
 			self.description.text = text
 			add_in_element(self.aggregation, self.description)
 
 	def add_agent(self, agent_type, name, **kwargs):
 		if self.agents is None:
 			self.agents = Agents()
-			add_in_element(self.aggregation, self.agents.agents)
+			add_in_element(self.aggregation, self.agents.element)
 		self.agents.add_agent(agent_type, name, **kwargs)
 
 	def add_date(self, date, type_of_date):
 		if self.dates is None:
 			self.dates = Dates()
-			add_in_element(self.aggregation, self.dates.dates)
+			add_in_element(self.aggregation, self.dates.element)
 		self.dates.add_date(date, type_of_date)
 
 	def history_line(self, value):
 		if self.archival_history is None:
-			self.archival_history = etree.Element("archivalHistory")
+			self.archival_history = etree.Element(ns.ERMS + "archivalHistory", nsmap=ns.ERMS_NSMAP)
 			add_in_element(self.aggregation, self.archival_history)
 
 		elm = etree.Element("historyLine")
@@ -414,38 +416,38 @@ class Aggregation:
 
 	def dispatch_mode(self, value):
 		if self.dispatch_mode is None:
-			self.dispatch_mode = etree.Element("dispatchMode")
+			self.dispatch_mode = etree.Element(ns.ERMS + "dispatchMode", nsmap=ns.ERMS_NSMAP)
 			self.dispatch_mode.text = value
 			add_in_element(self.aggregation, self.dispatch_mode)
 
 	def access(self, value):
 		if self.access is None:
-			self.access = etree.Element("access")
+			self.access = etree.Element(ns.ERMS + "access", nsmap=ns.ERMS_NSMAP)
 			self.access.text = value
 			add_in_element(self.aggregation, self.access)
 
 	def physical_location(self, current_location=None, home_location=None):
 		if self.physical_locations is None:
-			self.physical_locations = etree.Element("physicalLocations")
+			self.physical_locations = etree.Element(ns.ERMS + "physicalLocations", nsmap=ns.ERMS_NSMAP)
 			add_in_element(self.aggregation, self.physical_locations)
 
-		phys_loc = etree.Element("physicalLocation")
+		phys_loc = etree.Element(ns.ERMS + "physicalLocation", nsmap=ns.ERMS_NSMAP)
 		self.physical_locations.append(phys_loc)
 
 		if current_location is not None:
-			cur_loc = etree.Element("currentLocation")
+			cur_loc = etree.Element(ns.ERMS + "currentLocation", nsmap=ns.ERMS_NSMAP)
 			cur_loc.text = current_location
 			phys_loc.append(cur_loc)
 
 		if home_location is not None:
 			for item in home_location:
-				elm = etree.Element("homeLocation")
+				elm = etree.Element(ns.ERMS + "homeLocation", nsmap=ns.ERMS_NSMAP)
 				elm.text = item
 				phys_loc.append(elm)
 
 	def note(self, value, note_type=None, note_date=None):
 		if self.notes is None:
-			self.notes = etree.Element("notes")
+			self.notes = etree.Element(ns.ERMS + "notes", nsmap=ns.ERMS_NSMAP)
 			add_in_element(self.aggregation, self.notes)
 
 		attribut = {}
@@ -454,7 +456,7 @@ class Aggregation:
 		if note_date is not None:
 			attribut["noteDate"] = note_date
 
-		elm = etree.Element("note", attribut)
+		elm = etree.Element(ns.ERMS + "note", attribut, nsmap=ns.ERMS_NSMAP)
 		elm.text = value
 		self.notes.append(elm)
 
@@ -468,5 +470,5 @@ class Aggregation:
 		if self.sub_aggregation is None:
 			new_rec = Record()
 			self.record.append(new_rec)
-			add_in_element(self.aggregation, new_rec.record)
+			add_in_element(self.aggregation, new_rec.element)
 			return new_rec
