@@ -6,20 +6,47 @@ import erms_create.ns as ns
 
 
 class Control:
+	"""
+	A class for the control-element
+
+	...
+
+	Attributes
+    ----------
+    element: lxml.etree.Element
+    	the control-element as etree element
+    identification: list
+    	a list of identification-elements (lxml.etree.element) within the control-element.
+    information_class: lxml.etree.Element
+    	the informationClass-element as etree element
+    classification_schema: lxml.etree.element
+    	the classificationSchema-element as etree element
+    security_class: lxml.etree.element
+    	the securityClass-element as etree element
+    dates: erms-create Dates object
+    	this object contains all date-elements in the control-element
+    maintenance_information: erms-create MaintenanceInformation object
+    	this object comtains all elements in the maintenanceInformation-element
+    system_information:
+
+    Methods
+    -------
+    add_identification(value: str, identification_type: str)
+    	Adds an identification-element to the control-element
+
+
+	"""
 
 	def __init__(self):
+
 		self.element = etree.Element(ns.ERMS + "control", nsmap=ns.ERMS_NSMAP)
 		self.identification = []
 		self.information_class = None
 		self.classification_schema = etree.SubElement(self.element, ns.ERMS + "classificationSchema", nsmap=ns.ERMS_NSMAP)
-		self.securityClass = None
+		self.security_class = None
 		self.dates = None
 		self.maintenance_information = MaintenanceInformation()
 		add_in_element(self.element, self.maintenance_information.element)
-		# self.maintenance_status = etree.SubElement(self.maintenance_information, "maintenanceStatus")
-		# self.maintenance_agency = etree.SubElement(self.maintenance_information, "maintenanceAgency")
-		# self.maintenance_history = etree.SubElement(self.maintenance_information, "maintenanceHistory")
-
 		self.system_information = None
 
 	def add_identification(self, value, identification_type):
@@ -27,16 +54,22 @@ class Control:
 		elm.text = value
 		add_in_element(self.element, elm)
 
-	def set_classification_schema(self, schema):
-		text = etree.SubElement(self.classification_schema, ns.ERMS + "textualDescriptionOfClassificationSchema", nsmap=ns.ERMS_NSMAP)
-		p = etree.SubElement(text, ns.ERMS + "p", nsmap=ns.ERMS_NSMAP)
-		p.text = schema
-
 	def add_information_class(self, value):
 		if self.information_class is None:
 			self.information_class = etree.Element(ns.ERMS + "informationClass", nsmap=ns.ERMS_NSMAP)
 			self.information_class.text = value
 			add_in_element(self.element, self.information_class)
+
+	def set_classification_schema(self, schema):
+		text = etree.SubElement(self.classification_schema, ns.ERMS + "textualDescriptionOfClassificationSchema", nsmap=ns.ERMS_NSMAP)
+		p = etree.SubElement(text, ns.ERMS + "p", nsmap=ns.ERMS_NSMAP)
+		p.text = schema
+
+	def set_security_class(self, security_class: str):
+		if self.security_class is None:
+			self.security_class = etree.Element(ns.ERMS + "securityClass", nsmap=ns.ERMS_NSMAP)
+			self.security_class.text = security_class
+			add_in_element(self.element, self.security_class)
 
 	def add_date(self, date, type_of_date):
 		if self.dates is None:
@@ -44,17 +77,11 @@ class Control:
 			add_in_element(self.element, self.dates.element)
 		self.dates.add_date(date, type_of_date)
 
+	def set_system_information(self):
+#TODO: Systeminformationelementet
+		pass
 
 
-	# def set_maintenance_agency(self, agency_code: str, code_type: str, name: str):
-	# 	ag_code = etree.SubElement(self.maintenance_agency, "agencyCode", type=code_type)
-	# 	ag_code.text = agency_code
-	# 	ag_name = etree.SubElement(self.maintenance_agency, "agencyName")
-	# 	ag_name.text = name
-	#
-	# def add_maintenance_event(self, event_type: str, date_time: str, agent_name: str, agent_type: str, **kwargs):
-	# 	event= MaintenanceEvent(event_type=event_type, date_time=date_time, agent_name=agent_name, agent_type=agent_type, **kwargs)
-	# 	self.maintenance_history.append(event.element)
 
 class MaintenanceInformation:
 	def __init__(self):
