@@ -6,7 +6,7 @@ Svenska kyrkans anpassning av ERMS för ärendehandlingar.
 Bygger på core och lägger till SVK-specifika element och validering.
 
 Usage:
-    from svk_arende import SVKErms, SVKCase, SVKRecord
+    from erms_create.svk_arende import SVKErms, SVKCase, SVKRecord
 
     erms = SVKErms()
     case = erms.add_case(

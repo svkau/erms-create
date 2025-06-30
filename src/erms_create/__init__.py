@@ -6,10 +6,10 @@ Python library for creating ERMS XML documents according to Swedish specificatio
 
 This package provides:
 - core: Standard ERMS functionality
-- svk_arende: Church of Sweden adaptations for case files
+- svk_arende: Swedish Church adaptations for case files
 
 Basic usage:
-    >>> from svk_arende import SVKErms
+    >>> from erms_create import SVKErms
     >>> erms = SVKErms()
     >>> case = erms.create_simple_case(
     ...     case_number="F 2024-0001",
@@ -21,8 +21,8 @@ Basic usage:
 """
 
 # Import main classes for convenient access
-from .core import Erms, Control, Aggregation, Record
-from .svk_arende import SVKErms, SVKCase, SVKRecord
+from .core import Erms, Control, Aggregation, Record  # Ändrat från erms_core till core
+from .svk_arende import SVKErms, SVKCase, SVKRecord    # Ändrat från erms_svk_arende
 
 # Version info
 __version__ = "1.0.0"
@@ -45,10 +45,9 @@ __all__ = [
     "__version__",
 ]
 
-
 # Convenience imports for common use cases
 def create_simple_case(case_number: str, title: str, archive_creator: str,
-                       org_number: str, **kwargs):
+                      org_number: str, **kwargs):
     """
     Convenience function to quickly create a simple case.
 
@@ -64,9 +63,9 @@ def create_simple_case(case_number: str, title: str, archive_creator: str,
 
     Example:
         >>> erms, case = create_simple_case(
-        ...     "F 2024-0001", 
+        ...     "F 2024-0001",
         ...     "My Case",
-        ...     "My Organization", 
+        ...     "My Organization",
         ...     "1234567890"
         ... )
         >>> erms.save_to_file("my_case.xml")
@@ -80,7 +79,6 @@ def create_simple_case(case_number: str, title: str, archive_creator: str,
         **kwargs
     )
     return erms, case
-
 
 # Add convenience function to exports
 __all__.append("create_simple_case")
